@@ -14,6 +14,9 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        
+        session()->flash('menu','Dashboard');
+        session()->flash('sub-menu', null);
     }
 
     /**
