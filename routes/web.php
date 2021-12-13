@@ -118,3 +118,51 @@ Route::delete('user-jobs-delete',
     ]
 )->name('user.jobs.delete');
 # End User Management Routes
+
+
+# Configuration Routes
+Route::any('country',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@country',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Country'],
+    'roles'=>['Read']
+]
+)->name('country.index');
+
+Route::any('country/filter',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@filter_country',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Country'],
+    'roles'=>['Read']
+]
+)->name('country.filter');
+
+Route::post('country/store',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@store_country',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Country'],
+    'roles'=>['Read']
+]
+)->name('country.store');
+
+Route::post('country/update',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@update_country',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Country'],
+    'roles'=>['Read']
+]
+)->name('country.update');
+
+Route::delete('country/delete',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@delete_country',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Country'],
+    'roles'=>['Read']
+]
+)->name('country.delete');
+# End Configuration Routes

@@ -80,7 +80,7 @@ class UserController extends Controller
 
     public function show()
     {
-        $this->__construct('users');
+        $this->__construct('All Users');
         $users = User::leftjoin('job', 'job.id', 'users.job_id')
         ->select('users.*', 'job.name as user_type', 'job.id as job_id')->get();
         $access_domains = AccessDomain::get();
@@ -91,7 +91,7 @@ class UserController extends Controller
 
     public function change_permission(Request $request)
     {
-        $this->__construct('users');
+        $this->__construct('All Users');
         $user = User::where('email',$request->email)->first();
         $user->job_id = $request->user_type;
         $user->update();
@@ -132,7 +132,7 @@ class UserController extends Controller
 
     public function reset_password(Request $request)
     {
-        $this->__construct('users');
+        $this->__construct('All Users');
         $user = User::where('email',$request->email)->first();
 
         $user->password = Hash::make($request->password);
@@ -161,7 +161,7 @@ class UserController extends Controller
 
     public function destroy($email)
     {
-        $this->__construct('users');
+        $this->__construct('All Users');
         $user = User::where('email',$email)->first();
 
         $user->delete();
@@ -254,7 +254,7 @@ class UserController extends Controller
 
     public function jobs()
     {
-        $this->__construct('jobs');
+        $this->__construct('User Jobs');
         $access_domains = AccessDomain::get();
         $domains = AccessDomain::groupBy('domain')->select('domain')->get();
         $roles = Role::get();

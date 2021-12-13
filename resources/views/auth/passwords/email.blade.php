@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{env('APP_NAME')}} | Forgot Password</title>
+  <title>{{config('app.name')}} | Forgot Password</title>
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{asset('plugins/fontawesome-free/css/all.min.css')}}">
@@ -22,7 +22,7 @@
 <div class="login-box">
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <a href="#" class="h1">{{env('APP_NAME')}}</a>
+      <a href="#" class="h1">{{config('app.name')}}</a>
     </div>
     <div class="card-body">
       <p class="login-box-msg">You forgot your password? Here you can easily retrieve a new password.</p>

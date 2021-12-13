@@ -1,10 +1,9 @@
-
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img src="{{asset('dist/img/AdminLTELogo.png')}}" alt="{{env('APP_NAME')}} Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">{{env('APP_NAME')}}</span>
+    <a href="{{route('home')}}" class="brand-link">
+      <img src="{{asset('dist/img/AdminLTELogo.png')}}" alt="{{config('app.name')}} Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">{{config('app.name')}}</span>
     </a>
 
     <!-- Sidebar -->
@@ -45,6 +44,26 @@
             </a>
           </li>
           
+          <li class="nav-item {{ session('menu') == 'Configuration' ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ session('menu') == 'Configuration' ? 'active' : '' }}">
+              <i class="nav-icon fas fa-cogs"></i>
+              <p>
+                Configuration
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              @if (Auth::user()->hasAccessDomain('Country'))
+              <li class="nav-item">
+                <a href="{{route('country.index')}}" class="nav-link {{ session('sub-menu') == 'Country' ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Country</p>
+                </a>
+              </li>
+              @endif
+            </ul>
+          </li>
+          
           <li class="nav-item {{ session('menu') == 'User Management' ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ session('menu') == 'User Management' ? 'active' : '' }}">
               <i class="nav-icon fas fa-users"></i>
@@ -56,7 +75,7 @@
             <ul class="nav nav-treeview">
               @if (Auth::user()->hasAccessDomain('All Users'))
               <li class="nav-item">
-                <a href="{{route('user-show')}}" class="nav-link {{ session('sub-menu') == 'users' ? 'active' : '' }}">
+                <a href="{{route('user-show')}}" class="nav-link {{ session('sub-menu') == 'All Users' ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>All Users</p>
                 </a>
@@ -72,7 +91,7 @@
               @endif
               @if (Auth::user()->hasAccessDomain('User Jobs'))
               <li class="nav-item">
-                <a href="{{route('user.jobs')}}" class="nav-link {{ session('sub-menu') == 'jobs' ? 'active' : '' }}">
+                <a href="{{route('user.jobs')}}" class="nav-link {{ session('sub-menu') == 'User Jobs' ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>User Jobs</p>
                 </a>

@@ -3,14 +3,14 @@
 @section('content')
 <div class="card">
 	<div class="card-header">
-    <b style="font-size: 24px;">Jobs List</b>
+    <b style="font-size: 24px;">{{session('sub-menu')}}</b>
     <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#add_modal"> <i class="icon icon-plus"></i>New Job</button>
   </div>
   <div id="add_modal" tabindex="-1" role="dialog" class="modal fade">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header bg-primary">
-          <h4 class="modal-title"><i class="icon icon-plus"></i>Roll Details</h4>
+          <h4 class="modal-title"><i class="icon icon-plus"></i>Job Details</h4>
           <button type="button" class="close" data-dismiss="modal">
             <span aria-hidden="true">×</span>
           </button>

@@ -10,7 +10,7 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge" />
         <link rel="shortcut icon" href="https://e-recruitment.unitar.org/themes/custom/unitar_hr/favicon.ico" type="image/vnd.microsoft.icon" />
 
-        <title>{{env('APP_NAME')}} | Log in</title>
+        <title>{{config('app.name')}} | Log in</title>
         <link rel="stylesheet" media="all" href="{{asset('assets/login/css_YKGR2O-mHz-x_jAUBEB4WXY3nC7HZKE1JYCL5Vn0dKk.css')}}" />
         <link rel="stylesheet" media="all" href="{{asset('assets/login/css_HRphcDt12SrFauP_Wod0-z1KL7meoriGwXu4D4i3UY4.css')}}" />
         {{-- <link rel="stylesheet" media="all" href="http://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:700" /> --}}

@@ -3,7 +3,7 @@
 @section('content')
 <div class="card">
 	<div class="card-header">
-		<b style="font-size: 24px;">System Users List</b>
+		<b style="font-size: 24px;">{{session('sub-menu')}}</b>
 	</div>
 	<div class="card-body">
 		<div class="table-responsive">
