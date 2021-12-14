@@ -13,6 +13,35 @@
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{asset('dist/css/adminlte.min.css')}}">
+  {{-- <style>
+    fieldset
+    {
+        border: 1px solid #ddd !important;
+        margin: 0;
+        min-width: 0;
+        width: 100%;
+        padding: 10px;
+        position: relative;
+        border-radius:6px;
+        background-color:#f3f3f3;
+        margin:10px;
+        padding-left:10px!important;
+    }
+
+    legend
+    {
+        font-size:14px;
+        font-weight:bold;
+        margin-bottom: 0px;
+        width: 55%;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px 5px 5px 10px;
+        color:white;
+        background-color:#3B3F51;
+        opacity: 0.8;
+    }
+  </style> --}}
 </head>
 <!--
 `body` tag options:

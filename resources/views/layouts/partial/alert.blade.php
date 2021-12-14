@@ -5,7 +5,9 @@
         title: 'Success',
         subtitle: ' ',
         icon: 'fas fa-check fa-lg',
-        body: "{{session('success')}}"
+        body: "{{session('success')}}",
+        autohide: true,
+        delay: 2000,
     });
     "@endif";
     
@@ -15,7 +17,9 @@
         title: 'Warning',
         subtitle: ' ',
         icon: 'fas fa-exclamation-triangle fa-lg',
-        body: "{{session('warning')}}"
+        body: "{{session('warning')}}",
+        autohide: true,
+        delay: 2000,
     });
     "@endif";
     
@@ -25,7 +29,9 @@
         title: 'Blocked',
         subtitle: ' ',
         icon: 'fas fa-ban fa-lg',
-        body: "{{session('danger')}}"
+        body: "{{session('danger')}}",
+        autohide: true,
+        delay: 2000,
     });
     "@endif";
 

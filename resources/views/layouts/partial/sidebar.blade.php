@@ -61,9 +61,88 @@
                 </a>
               </li>
               @endif
+              @if (Auth::user()->hasAccessDomain('Province'))
+              <li class="nav-item">
+                <a href="{{route('province.index')}}" class="nav-link {{ session('sub-menu') == 'Province' ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Province</p>
+                </a>
+              </li>
+              @endif
+              @if (Auth::user()->hasAccessDomain('District'))
+              <li class="nav-item">
+                <a href="{{route('district.index')}}" class="nav-link {{ session('sub-menu') == 'District' ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>District</p>
+                </a>
+              </li>
+              @endif
+              @if (Auth::user()->hasAccessDomain('Village'))
+              <li class="nav-item">
+                <a href="{{route('village.index')}}" class="nav-link {{ session('sub-menu') == 'Village' ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Village</p>
+                </a>
+              </li>
+              @endif
             </ul>
           </li>
+
+          <li class="nav-item">
+            <a href="{{route('home')}}" class="nav-link {{ session('menu') == 'Donors' ? 'active' : '' }}">
+              <i class="nav-icon fas fa-award"></i>
+              <p>
+                Donors
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{route('home')}}" class="nav-link {{ session('menu') == 'Ministries' ? 'active' : '' }}">
+              <i class="nav-icon fas fa-dungeon"></i>
+              <p>
+                Ministries
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{route('home')}}" class="nav-link {{ session('menu') == 'UN Agencies' ? 'active' : '' }}">
+              <i class="nav-icon fas fa-underline"></i>
+              <p>
+                UN Agencies
+              </p>
+            </a>
+          </li>
           
+          <li class="nav-item {{ session('menu') == '' ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ session('menu') == '' ? 'active' : '' }}">
+              <i class="nav-icon fas fa-igloo"></i>
+              <p>
+                NGOs
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              @if (Auth::user()->hasAccessDomain('Inernational NGOs'))
+              <li class="nav-item">
+                <a href="{{route('user-show')}}" class="nav-link {{ session('sub-menu') == 'Inernational NGOs' ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Inernational NGOs</p>
+                </a>
+              </li>
+              @endif
+              @if (Auth::user()->hasAccessDomain('Local NGOs'))
+              <li class="nav-item">
+                <a href="{{route('user-show')}}" class="nav-link {{ session('sub-menu') == 'Local NGOs' ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Local NGOs</p>
+                </a>
+              </li>
+              @endif
+            </ul>
+          </li>
+
           <li class="nav-item {{ session('menu') == 'User Management' ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ session('menu') == 'User Management' ? 'active' : '' }}">
               <i class="nav-icon fas fa-users"></i>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ConfigurationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,6 +122,9 @@ Route::delete('user-jobs-delete',
 
 
 # Configuration Routes
+// Country Routes
+Route::get('country/provinces', [App\Http\Controllers\ConfigurationController::class, 'country_provinces'])->middleware('auth')->name('country.provinces');
+
 Route::any('country',
 [
     'uses'=>'App\Http\Controllers\ConfigurationController@country',
@@ -144,7 +148,7 @@ Route::post('country/store',
     'uses'=>'App\Http\Controllers\ConfigurationController@store_country',
     'middleware'=>['accessDomains','auth','roles'],
     'access_domains'=>['Country'],
-    'roles'=>['Read']
+    'roles'=>['Create']
 ]
 )->name('country.store');
 
@@ -153,7 +157,7 @@ Route::post('country/update',
     'uses'=>'App\Http\Controllers\ConfigurationController@update_country',
     'middleware'=>['accessDomains','auth','roles'],
     'access_domains'=>['Country'],
-    'roles'=>['Read']
+    'roles'=>['Update']
 ]
 )->name('country.update');
 
@@ -162,7 +166,147 @@ Route::delete('country/delete',
     'uses'=>'App\Http\Controllers\ConfigurationController@delete_country',
     'middleware'=>['accessDomains','auth','roles'],
     'access_domains'=>['Country'],
-    'roles'=>['Read']
+    'roles'=>['Delete']
 ]
 )->name('country.delete');
+
+// Province Routes
+Route::get('province/districts', [App\Http\Controllers\ConfigurationController::class, 'province_districts'])->middleware('auth')->name('province.districts');
+
+Route::any('province',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@province',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Province'],
+    'roles'=>['Read']
+]
+)->name('province.index');
+
+Route::any('province/filter',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@filter_province',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Province'],
+    'roles'=>['Read']
+]
+)->name('province.filter');
+
+Route::post('province/store',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@store_province',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Province'],
+    'roles'=>['Create']
+]
+)->name('province.store');
+
+Route::post('province/update',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@update_province',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Province'],
+    'roles'=>['Update']
+]
+)->name('province.update');
+
+Route::delete('province/delete',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@delete_province',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Province'],
+    'roles'=>['Delete']
+]
+)->name('province.delete');
+
+// District Routes
+Route::any('district',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@district',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['District'],
+    'roles'=>['Read']
+]
+)->name('district.index');
+
+Route::any('district/filter',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@filter_district',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['District'],
+    'roles'=>['Read']
+]
+)->name('district.filter');
+
+Route::post('district/store',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@store_district',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['District'],
+    'roles'=>['Create']
+]
+)->name('district.store');
+
+Route::post('district/update',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@update_district',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['District'],
+    'roles'=>['Update']
+]
+)->name('district.update');
+
+Route::delete('district/delete',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@delete_district',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['District'],
+    'roles'=>['Delete']
+]
+)->name('district.delete');
+
+// Village Routes
+Route::any('village',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@village',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Village'],
+    'roles'=>['Read']
+]
+)->name('village.index');
+
+Route::any('village/filter',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@filter_village',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Village'],
+    'roles'=>['Read']
+]
+)->name('village.filter');
+
+Route::post('village/store',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@store_village',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Village'],
+    'roles'=>['Create']
+]
+)->name('village.store');
+
+Route::post('village/update',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@update_village',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Village'],
+    'roles'=>['Update']
+]
+)->name('village.update');
+
+Route::delete('village/delete',
+[
+    'uses'=>'App\Http\Controllers\ConfigurationController@delete_village',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Village'],
+    'roles'=>['Delete']
+]
+)->name('village.delete');
 # End Configuration Routes
