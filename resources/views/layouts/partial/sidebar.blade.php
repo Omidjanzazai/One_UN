@@ -98,7 +98,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{route('home')}}" class="nav-link {{ session('menu') == 'Ministries' ? 'active' : '' }}">
+            <a href="{{route('ministry.index')}}" class="nav-link {{ session('menu') == 'Ministries' ? 'active' : '' }}">
               <i class="nav-icon fas fa-dungeon"></i>
               <p>
                 Ministries

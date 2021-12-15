@@ -357,3 +357,50 @@ Route::delete('donor/delete',
 ]
 )->name('donor.delete');
 # End Donor Routes
+
+# Ministries Routes
+Route::any('ministry',
+[
+    'uses'=>'App\Http\Controllers\MinistryController@ministry',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Ministries'],
+    'roles'=>['Read']
+]
+)->name('ministry.index');
+
+Route::any('ministry/filter',
+[
+    'uses'=>'App\Http\Controllers\MinistryController@filter_ministry',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Ministries'],
+    'roles'=>['Read']
+]
+)->name('ministry.filter');
+
+Route::post('ministry/store',
+[
+    'uses'=>'App\Http\Controllers\MinistryController@store_ministry',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Ministries'],
+    'roles'=>['Create']
+]
+)->name('ministry.store');
+
+Route::post('ministry/update',
+[
+    'uses'=>'App\Http\Controllers\MinistryController@update_ministry',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Ministries'],
+    'roles'=>['Update']
+]
+)->name('ministry.update');
+
+Route::delete('ministry/delete',
+[
+    'uses'=>'App\Http\Controllers\MinistryController@delete_ministry',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Ministries'],
+    'roles'=>['Delete']
+]
+)->name('ministry.delete');
+# End Ministries Routes
