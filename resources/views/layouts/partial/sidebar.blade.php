@@ -115,8 +115,8 @@
             </a>
           </li>
           
-          <li class="nav-item {{ session('menu') == '' ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ session('menu') == '' ? 'active' : '' }}">
+          <li class="nav-item {{ session('menu') == 'NGOs' ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ session('menu') == 'NGOs' ? 'active' : '' }}">
               <i class="nav-icon fas fa-igloo"></i>
               <p>
                 NGOs
@@ -126,17 +126,17 @@
             <ul class="nav nav-treeview">
               @if (Auth::user()->hasAccessDomain('Inernational NGOs'))
               <li class="nav-item">
-                <a href="{{route('user-show')}}" class="nav-link {{ session('sub-menu') == 'Inernational NGOs' ? 'active' : '' }}">
+                <a href="{{route('ngo.index', 'Inernational NGOs')}}" class="nav-link {{ session('sub-menu') == 'Inernational NGOs' ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Inernational NGOs</p>
                 </a>
               </li>
               @endif
-              @if (Auth::user()->hasAccessDomain('Local NGOs'))
+              @if (Auth::user()->hasAccessDomain('National NGOs'))
               <li class="nav-item">
-                <a href="{{route('user-show')}}" class="nav-link {{ session('sub-menu') == 'Local NGOs' ? 'active' : '' }}">
+                <a href="{{route('ngo.index', 'National NGOs')}}" class="nav-link {{ session('sub-menu') == 'National NGOs' ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Local NGOs</p>
+                  <p>National NGOs</p>
                 </a>
               </li>
               @endif

@@ -451,3 +451,50 @@ Route::delete('un_agencies/delete',
 ]
 )->name('un_agencies.delete');
 # End UN Agencies Routes
+
+# Ngos Routes
+Route::any('ngo/{type}',
+[
+    'uses'=>'App\Http\Controllers\NgoController@ngo',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Inernational NGOs', 'National NGOs'],
+    'roles'=>['Read']
+]
+)->name('ngo.index');
+
+Route::any('ngo/{type}/filter',
+[
+    'uses'=>'App\Http\Controllers\NgoController@filter_ngo',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Inernational NGOs', 'National NGOs'],
+    'roles'=>['Read']
+]
+)->name('ngo.filter');
+
+Route::post('ngo/{type}/store',
+[
+    'uses'=>'App\Http\Controllers\NgoController@store_ngo',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Inernational NGOs', 'National NGOs'],
+    'roles'=>['Create']
+]
+)->name('ngo.store');
+
+Route::post('ngo/{type}/update',
+[
+    'uses'=>'App\Http\Controllers\NgoController@update_ngo',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Inernational NGOs', 'National NGOs'],
+    'roles'=>['Update']
+]
+)->name('ngo.update');
+
+Route::delete('ngo/{type}/delete',
+[
+    'uses'=>'App\Http\Controllers\NgoController@delete_ngo',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Inernational NGOs', 'National NGOs'],
+    'roles'=>['Delete']
+]
+)->name('ngo.delete');
+# End Ngos Routes
