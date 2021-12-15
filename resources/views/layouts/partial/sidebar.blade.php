@@ -89,7 +89,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{route('home')}}" class="nav-link {{ session('menu') == 'Donors' ? 'active' : '' }}">
+            <a href="{{route('donor.index')}}" class="nav-link {{ session('menu') == 'Donors' ? 'active' : '' }}">
               <i class="nav-icon fas fa-award"></i>
               <p>
                 Donors

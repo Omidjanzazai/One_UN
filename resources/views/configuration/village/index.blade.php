@@ -173,6 +173,7 @@
                 error:function()
                 {
                     alert('There Is Problem on Processing Your Request Please Contact Database Administrator!');
+                    $('#province_id_'+special_id).html('<option value="">--Select Province--</option>');
                     $('.loader').hide();
                 }
             });
@@ -199,6 +200,7 @@
                 error:function()
                 {
                     alert('There Is Problem on Processing Your Request Please Contact Database Administrator!');
+                    $('#district_id_'+special_id).html('<option value="">--Select District--</option>');
                     $('.loader').hide();
                 }
             });

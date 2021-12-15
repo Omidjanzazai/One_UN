@@ -310,3 +310,50 @@ Route::delete('village/delete',
 ]
 )->name('village.delete');
 # End Configuration Routes
+
+# Donor Routes
+Route::any('donor',
+[
+    'uses'=>'App\Http\Controllers\DonorController@donor',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Donors'],
+    'roles'=>['Read']
+]
+)->name('donor.index');
+
+Route::any('donor/filter',
+[
+    'uses'=>'App\Http\Controllers\DonorController@filter_donor',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Donors'],
+    'roles'=>['Read']
+]
+)->name('donor.filter');
+
+Route::post('donor/store',
+[
+    'uses'=>'App\Http\Controllers\DonorController@store_donor',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Donors'],
+    'roles'=>['Create']
+]
+)->name('donor.store');
+
+Route::post('donor/update',
+[
+    'uses'=>'App\Http\Controllers\DonorController@update_donor',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Donors'],
+    'roles'=>['Update']
+]
+)->name('donor.update');
+
+Route::delete('donor/delete',
+[
+    'uses'=>'App\Http\Controllers\DonorController@delete_donor',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['Donors'],
+    'roles'=>['Delete']
+]
+)->name('donor.delete');
+# End Donor Routes

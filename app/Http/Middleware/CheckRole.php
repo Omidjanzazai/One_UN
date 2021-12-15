@@ -34,15 +34,15 @@ class CheckRole
             $locale = App::getLocale();
             switch ($locale) {
                 case 'en':
-                    session()->flash('warning', 'Insufficient Permission.');
+                    session()->flash('danger', 'Insufficient Permission.');
                     break;
                 
                 case 'fa':
-                    session()->flash('warning', 'دسترسی به این بخش مجاز نیست.');
+                    session()->flash('danger', 'دسترسی به این بخش مجاز نیست.');
                     break;
                 
                 case 'pa':
-                    session()->flash('warning', 'تاسی نشی کولی دی زای ته لاس رسی ولری.');
+                    session()->flash('danger', 'تاسی نشی کولی دی زای ته لاس رسی ولری.');
                     break;
                 
                 default:

@@ -45,6 +45,10 @@ class ConfigurationController extends Controller
 
     public function filter_country(Request $request)
     {
+        if ($request->value == null) {
+            return $this->country($request);
+        }
+
         $data = Country::when($request->search_by == 'Name' , function($query) use ($request){
             return $query->where('country.name', 'like', '%'.$request->value.'%');
         })
@@ -131,6 +135,10 @@ class ConfigurationController extends Controller
 
     public function filter_province(Request $request)
     {
+        if ($request->name == null and $request->country_id == null) {
+            return $this->province($request);
+        }
+
         $data = Province::join('country', 'country.id', 'province.country_id')
         ->when($request->name != null , function($query) use ($request){
             return $query->where('province.name', 'like', '%'.$request->name.'%');
@@ -209,6 +217,10 @@ class ConfigurationController extends Controller
 
     public function filter_district(Request $request)
     {
+        if ($request->name == null and $request->country_id == null and $request->province_id != null) {
+            return $this->district($request);
+        }
+
         $data = District::join('province', 'province.id', 'district.province_id')
         ->join('country', 'country.id', 'province.country_id')
         ->when($request->name != null , function($query) use ($request){
@@ -291,6 +303,10 @@ class ConfigurationController extends Controller
 
     public function filter_village(Request $request)
     {
+        if ($request->name == null and $request->country_id == null and $request->province_id != null and $request->district_id) {
+            return $this->village($request);
+        }
+
         $data = Village::join('district', 'district.id', 'village.district_id')
         ->join('province', 'province.id', 'district.province_id')
         ->join('country', 'country.id', 'province.country_id')
