@@ -404,3 +404,50 @@ Route::delete('ministry/delete',
 ]
 )->name('ministry.delete');
 # End Ministries Routes
+
+# UN Agencies Routes
+Route::any('un_agencies',
+[
+    'uses'=>'App\Http\Controllers\UnAgencyController@un_agencies',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['UN Agencies'],
+    'roles'=>['Read']
+]
+)->name('un_agencies.index');
+
+Route::any('un_agencies/filter',
+[
+    'uses'=>'App\Http\Controllers\UnAgencyController@filter_un_agencies',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['UN Agencies'],
+    'roles'=>['Read']
+]
+)->name('un_agencies.filter');
+
+Route::post('un_agencies/store',
+[
+    'uses'=>'App\Http\Controllers\UnAgencyController@store_un_agencies',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['UN Agencies'],
+    'roles'=>['Create']
+]
+)->name('un_agencies.store');
+
+Route::post('un_agencies/update',
+[
+    'uses'=>'App\Http\Controllers\UnAgencyController@update_un_agencies',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['UN Agencies'],
+    'roles'=>['Update']
+]
+)->name('un_agencies.update');
+
+Route::delete('un_agencies/delete',
+[
+    'uses'=>'App\Http\Controllers\UnAgencyController@delete_un_agencies',
+    'middleware'=>['accessDomains','auth','roles'],
+    'access_domains'=>['UN Agencies'],
+    'roles'=>['Delete']
+]
+)->name('un_agencies.delete');
+# End UN Agencies Routes

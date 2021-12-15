@@ -107,7 +107,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{route('home')}}" class="nav-link {{ session('menu') == 'UN Agencies' ? 'active' : '' }}">
+            <a href="{{route('un_agencies.index')}}" class="nav-link {{ session('menu') == 'UN Agencies' ? 'active' : '' }}">
               <i class="nav-icon fas fa-underline"></i>
               <p>
                 UN Agencies
