@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UnAgencyController;
 use App\Http\Controllers\ConfigurationController;
 
 /*
@@ -25,6 +26,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Auth::routes(['register'=>false]);
 
 Route::get('profile', [App\Http\Controllers\UserController::class, 'profile'])->middleware('auth')->name('profile');
+Route::post('update/profile', [App\Http\Controllers\UserController::class, 'update_profile'])->middleware('auth')->name('update.profile');
 Route::post('change_password', [App\Http\Controllers\UserController::class, 'change_password'])->middleware('auth')->name('change-user-password');
 
 Route::get('user-create',
@@ -406,6 +408,8 @@ Route::delete('ministry/delete',
 # End Ministries Routes
 
 # UN Agencies Routes
+Route::get('un_agencies/donors', [App\Http\Controllers\UnAgencyController::class, 'un_agencies_donors'])->middleware('auth')->name('un_agencies.donors');
+
 Route::any('un_agencies',
 [
     'uses'=>'App\Http\Controllers\UnAgencyController@un_agencies',

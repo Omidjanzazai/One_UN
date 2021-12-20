@@ -1,6 +1,34 @@
 @extends('layouts.master')
 
 @section('content')
+<style>
+  fieldset
+  {
+      border: 1px solid #ddd !important;
+      min-width: 0;
+      width: 100%;
+      padding: 10px;
+      position: relative;
+      border-radius:6px;
+      background-color:#f3f3f3;
+      margin-top:10px;
+      padding-left:10px!important;
+  }
+
+  legend
+  {
+      font-size:14px;
+      font-weight:bold;
+      margin-bottom: 0px;
+      width: 55%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 5px 5px 5px 10px;
+      color:white;
+      background-color:#3B3F51;
+      opacity: 0.8;
+  }
+</style>
 <div class="card">
 	<div class="card-header">
     <b style="font-size: 24px;">{{session('sub-menu')}}</b>
@@ -31,19 +59,33 @@
                       </legend>
                       <div class="form-group" >
                         <div class="col-md-12">
-                          <select class="form-control" oninvalid="InvalidMsg(this);" name="access_domain[]" multiple style="height: 357px;" required>
+                          <ul>
                             @foreach($domains as $d)
-                              <?php $c=0; ?>
+                              <li>{{$d->domain}}</li>
+                              @foreach($access_domains as $a_d)
+                                @if($a_d->domain == $d->domain)
+                                  <ul>
+                                    <li>
+                                      <input type="checkbox" value="{{$a_d->id}}" name="access_domain[]" id="add_domain{{$a_d->id}}" >
+                                      <label for="add_domain{{$a_d->id}}">{{$a_d->item}}</label>
+                                    </li>
+                                  </ul>
+                                @endif
+                              @endforeach
+                            @endforeach
+                          </ul>
+
+                          {{-- <select class="form-control" oninvalid="InvalidMsg(this);" name="access_domain[]" multiple style="height: 357px;" required>
+                            @foreach($domains as $d)
                               <optgroup label="{{$d->domain}}">
                                 @foreach($access_domains as $a_d)
                                 @if($a_d->domain == $d->domain)
                                   <option value="{{$a_d->id}}">{{$a_d->item}}</option>
-                                    <?php $c++; ?>
                                   @endif
                                 @endforeach
                               </optgroup>
                             @endforeach
-                          </select>
+                          </select> --}}
                         </div>
                       </div>
                     </fieldset>
@@ -55,11 +97,20 @@
                       </legend>
                       <div class="form-group" >
                         <div class="col-md-12">
-                          <select class="form-control" oninvalid="InvalidMsg(this);" multiple style="height: 357px;" name="role[]" required>
+                          <ul>
+                            @foreach($roles as $role)
+                              <li>
+                                <input type="checkbox" value="{{$role->id}}" name="role[]" id="add_role{{$role->id}}" >
+                                <label for="add_role{{$role->id}}">{{$role->role}}</label>
+                              </li>
+                            @endforeach
+                          </ul>
+
+                          {{-- <select class="form-control" oninvalid="InvalidMsg(this);" multiple style="height: 357px;" name="role[]" required>
                             @foreach($roles as $role)
                               <option value="{{$role->id}}">{{$role->role}}</option>
                             @endforeach
-                          </select>
+                          </select> --}}
                         </div>
                       </div>
                     </fieldset>
@@ -87,6 +138,9 @@
 					</tr>
 				</thead>
 				<tbody>
+          @php
+              $x = 1;
+          @endphp
           @foreach ($jobs as $item)
 					<tr class="text-center">
             <td>{{$item->id}}</td>
@@ -151,7 +205,23 @@
                           </legend>
                           <div class="form-group">
                             <div class="col-md-12">
-                              <select class="form-control" form="edit_form{{$item->id}}" oninvalid="InvalidMsg(this);" name="access_domain[]" multiple style="height: 357px;">
+                              <ul>
+                                @foreach($domains as $d)
+                                  <li>{{$d->domain}}</li>
+                                  @foreach($access_domains as $a_d)
+                                    @if($a_d->domain == $d->domain)
+                                      <ul>
+                                        <li>
+                                          <input type="checkbox" value="{{$a_d->id}}" name="access_domain[]" {{$item->hasAccessDomain($a_d->item)? "checked": ''}} id="edit_domain{{$x.$a_d->id}}">
+                                          <label for="edit_domain{{$x.$a_d->id}}">{{$a_d->item}}</label>
+                                        </li>
+                                      </ul>
+                                    @endif
+                                  @endforeach
+                                @endforeach
+                              </ul>
+                              
+                              {{-- <select class="form-control" form="edit_form{{$item->id}}" oninvalid="InvalidMsg(this);" name="access_domain[]" multiple style="height: 357px;">
                                 @foreach($domains as $d)
                                   @php $c=0; @endphp
                                   <optgroup label="{{$d->domain}}">
@@ -163,7 +233,7 @@
                                     @endforeach
                                   </optgroup>
                                 @endforeach
-                              </select>
+                              </select> --}}
                             </div>
                           </div>
                         </fieldset>
@@ -175,11 +245,20 @@
                           </legend>
                           <div class="form-group" >
                             <div class="col-md-12">
-                              <select class="form-control" form="edit_form{{$item->id}}" oninvalid="InvalidMsg(this);" multiple style="height: 357px;" name="role[]">
+                              <ul>
+                                @foreach($roles as $role)
+                                  <li>
+                                    <input type="checkbox" value="{{$role->id}}" name="role[]" {{$item->hasRole($role->role) ? 'checked' : ''}} id="edit_role{{$x.$role->id}}" >
+                                    <label for="edit_role{{$x.$role->id}}">{{$role->role}}</label>
+                                  </li>
+                                @endforeach
+                              </ul>
+
+                              {{-- <select class="form-control" form="edit_form{{$item->id}}" oninvalid="InvalidMsg(this);" multiple style="height: 357px;" name="role[]">
                                 @foreach($roles as $role)
                                   <option value="{{$role->id}}" {{$item->hasRole($role->role)?'selected':''}}>{{$role->role}}</option>
                                 @endforeach
-                              </select>
+                              </select> --}}
                             </div>
                           </div>
                         </fieldset>
@@ -196,6 +275,9 @@
               </div>
             </div>
           </tr>
+          @php
+            $x++;
+          @endphp
           @endforeach
 				</tbody>
 			</table>

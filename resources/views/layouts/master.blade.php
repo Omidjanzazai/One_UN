@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{config('app.name')}}</title>
+  <link rel="shortcut icon" href="{{asset(config('app.logo'))}}"/>
 
   <!-- Google Font: Source Sans Pro -->
   {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"> --}}
@@ -42,6 +43,17 @@
         opacity: 0.8;
     }
   </style> --}}
+  <style>
+    .loader {
+      width: 150px;
+      height: 150px;
+      position: fixed;
+      left: 45%;
+      top: 40%;
+      z-index: 9999999;
+      display: none;
+    }
+  </style>
 </head>
 <!--
 `body` tag options:
@@ -53,6 +65,7 @@
   * sidebar-mini
 -->
 <body class="hold-transition sidebar-mini">
+<img class="loader" src="{{asset('assets/images/preloader.gif')}}">
 <div class="wrapper">
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -204,11 +217,13 @@
 <script src="{{asset('dist/js/adminlte.js')}}"></script>
 
 <!-- OPTIONAL SCRIPTS -->
+@if (session('menu') == 'Dashboard')
 <script src="{{asset('plugins/chart.js/Chart.min.js')}}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{{asset('dist/js/demo.js')}}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{asset('dist/js/pages/dashboard3.js')}}"></script>
+@endif
+<!-- AdminLTE for demo purposes -->
+{{-- <script src="{{asset('dist/js/demo.js')}}"></script> --}}
 
 @yield('script')
 @include('layouts.partial.alert')

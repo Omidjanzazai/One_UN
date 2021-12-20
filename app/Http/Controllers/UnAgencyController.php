@@ -14,6 +14,30 @@ class UnAgencyController extends Controller
     }
 
 
+    public function un_agencies_donors(Request $request)
+    {
+        $donors = UnAgency::join('un_agency_donor', 'un_agency_donor.un_agency_id', 'un_agencies.id')
+        ->join('donor', 'donor.id', 'un_agency_donor.donor_id')
+        ->join('country', 'country.id', 'donor.country_id')
+        ->where('un_agencies.id', $request->id)
+        ->select('donor.name', 'country.name as country_name')
+        ->get();
+        $data = '';
+
+        $x = 1;
+        foreach ($donors as $item) {
+            $data .= '
+            <tr>
+                <td>'.$x++.'</td>
+                <td>'.$item->name.'</td>
+                <td>'.$item->country_name.'</td>
+            </tr>';
+        }
+
+        return $data;
+    }
+
+
     public function un_agencies(Request $request)
     {
         $this->__construct('UN Agencies');

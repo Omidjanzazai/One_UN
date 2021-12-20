@@ -27,7 +27,7 @@
 							<td class="text-center" style="vertical-align: middle;">{{$user->email}}</td>
 							<td class="text-center" style="vertical-align: middle;">{{$user->user_type}}</td>
 							<td class="text-center" style="vertical-align: middle;">
-								<a data-toggle="modal" href="#reset_password{{$user->id}}" class="btn btn-danger mb-2">
+								<a data-toggle="modal" href="#reset_password{{$user->id}}" class="btn btn-sm btn-danger mb-2">
 									Reset Password
 								</a>
 
@@ -63,7 +63,7 @@
 									</div>
 								</div>
 
-								<a data-toggle="modal" href="#permission{{$user->id}}" class="btn btn-info mb-2">
+								<a data-toggle="modal" href="#permission{{$user->id}}" class="btn btn-sm btn-info mb-2">
 									Change User Type
 								</a>
 								
@@ -86,8 +86,8 @@
 															@php
 																$jobs = \App\Models\Jobs::where('type', 1)->get();
 															@endphp
-															<label for="user_type">User Type</label>
-															<select class="form-control" name="user_type" id="user_type" required>
+															<label for="user_type{{$user->job_id}}">User Type</label>
+															<select class="form-control" name="user_type" id="user_type{{$user->job_id}}" required>
 																<option value="">--Select User Type--</option>
 																@foreach ($jobs as $item)
 																	<option value="{{$item->id}}" {{$user->job_id == $item->id ? 'selected' : ''}}>{{$item->name}}</option>
@@ -107,7 +107,7 @@
 									</div>
 								</div>
 
-								<button type="button" class="btn btn-danger mb-2" data-toggle="modal" data-target="#delete_modal{{$user->id}}">
+								<button type="button" class="btn btn-sm btn-danger mb-2" data-toggle="modal" data-target="#delete_modal{{$user->id}}">
 									<i class="fa fa-trash"></i> Delete
 								</button>
 

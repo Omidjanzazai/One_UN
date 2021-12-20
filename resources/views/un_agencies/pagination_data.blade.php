@@ -23,7 +23,7 @@
                 Delete
             </button>
 
-            <button type="button" class="btn btn-info btn-sm">
+            <button type="button" class="btn btn-info btn-sm donors" record_id="{{$item->id}}">
                 Donors
             </button>
             </td>

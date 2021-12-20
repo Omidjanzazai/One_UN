@@ -196,6 +196,30 @@ class UserController extends Controller
 
         return view('auth.profile');
     }
+    
+    public function update_profile(Request $request)
+    {
+        $user = Auth::user();
+
+        $directory = 'assets/images/user_images';
+        if($photo = $request->file('photo')){
+            $name = $photo->getClientOriginalName();
+            $filename = pathinfo($name, PATHINFO_FILENAME);
+            $extension = pathinfo($name, PATHINFO_EXTENSION);
+            $new_name = $filename.'-'.time().'.'.$extension;
+            $photo->move($directory,$new_name);
+            $user->photo= $directory.'/'.$new_name;
+        }
+
+        $user->position = $request->position;
+        $user->phone_number = $request->phone_number;
+        $user->information = $request->information;
+        $user->update();
+
+        session()->flash('success', 'Updated Successfuly');
+
+        return redirect()->back();
+    }
 
     public function change_password(Request $request)
     {

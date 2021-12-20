@@ -14,6 +14,19 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Application Logo
+    |--------------------------------------------------------------------------
+    |
+    | This value is the logo of your application. This value is used when the
+    | framework needs to place the application's logo in a notification or
+    | any other location as required by the application or its packages.
+    |
+    */
+
+    'logo' => env('APP_LOGO', 'assets/login/un-logo.png'),
 
     /*
     |--------------------------------------------------------------------------

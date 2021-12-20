@@ -65,6 +65,37 @@
 		</div>
 	</div>
 </div>
+
+<div id="donors_modal" tabindex="-1" role="dialog" class="modal fade">
+    <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header bg-primary">
+        <h4 class="modal-title">Donors</h4>
+        <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">×</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Country</th>
+                        </tr>
+                    </thead>
+                    <tbody id="donor_details">
+                        <tr>
+                            <td colspan="3" style="color: coral;">This agency dont has any donor.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
 @endsection
 @section('script')
 <script>
@@ -108,6 +139,32 @@
                 success:function(data)
                 {
                     $('#table-data').html(data);
+                    $('.loader').hide();
+                },
+                error:function()
+                {
+                    alert('There Is Problem on Processing Your Request Please Contact Database Administrator!');
+                    $('.loader').hide();
+                }
+            });
+        });
+
+		$(document).on('click', '.donors', function(event){
+            var id = $(this).attr('record_id');
+            
+            $.ajax({
+                url:'{{route("un_agencies.donors")}}',
+                data:{'id':id},
+                beforeSend:function()
+                {
+                    $('.loader').show();
+                },
+                success:function(data)
+                {
+                    if (data != '') {
+                        $('#donor_details').html(data);
+                    }
+                    $('#donors_modal').modal('show');
                     $('.loader').hide();
                 },
                 error:function()
