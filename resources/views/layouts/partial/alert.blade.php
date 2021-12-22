@@ -7,7 +7,7 @@
         icon: 'fas fa-check fa-lg',
         body: "{{session('success')}}",
         autohide: true,
-        delay: 2000,
+        delay: 3000,
     });
     "@endif";
     
@@ -19,7 +19,19 @@
         icon: 'fas fa-exclamation-triangle fa-lg',
         body: "{{session('warning')}}",
         autohide: true,
-        delay: 2000,
+        delay: 3000,
+    });
+    "@endif";
+    
+    "@if (count($errors))";
+    $(document).Toasts('create', {
+        class: 'bg-warning',
+        title: 'Warning',
+        subtitle: ' ',
+        icon: 'fas fa-exclamation-triangle fa-lg',
+        body: `@foreach($errors->all() as $error)
+		<li> <i class="glyphicon glyphicon-alert"> </i> {{$error}}</li>
+		@endforeach`,
     });
     "@endif";
     
@@ -31,7 +43,7 @@
         icon: 'fas fa-ban fa-lg',
         body: "{{session('danger')}}",
         autohide: true,
-        delay: 2000,
+        delay: 3000,
     });
     "@endif";
 

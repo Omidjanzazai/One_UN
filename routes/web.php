@@ -56,16 +56,23 @@ Route::any('user-show',
     ]
 )->name('user-show');
 
-Route::any('user-change-permission',
-
+Route::any('user-info/{id}',
     [
-        'uses'=>'App\Http\Controllers\UserController@change_permission',
+        'uses'=>'App\Http\Controllers\UserController@user_info',
         'middleware'=>['accessDomains','auth','roles'],
         'access_domains'=>['All Users'],
-        'roles'=>['Create']
+        'roles'=>['Read']
     ]
+)->name('user-info');
 
-)->name('change-permission');
+Route::any('user-info-update/{id}',
+    [
+        'uses'=>'App\Http\Controllers\UserController@user_info_update',
+        'middleware'=>['accessDomains','auth','roles'],
+        'access_domains'=>['All Users'],
+        'roles'=>['Read']
+    ]
+)->name('user-info-update');
 
 Route::any('reset-password',
     [

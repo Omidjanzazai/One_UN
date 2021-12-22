@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\AccessDomain;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -23,39 +24,67 @@ class UserController extends Controller
     public function create()
     {
         $this->__construct('register');
-        $access_domains = AccessDomain::get();
-        $domains = AccessDomain::groupBy('domain')->select('domain')->get();
-        $roles = Role::get();
+        
+        $auth_user = Auth::user();
+        
+        $jobs = \App\Models\Jobs::where('type', $auth_user->type)->where('subject_id', $auth_user->subject_id)->get();
 
-        return view('auth.create_user',compact('access_domains','domains','roles'));
+        return view('auth.create_user',compact('jobs'));
     }
 
     public function store(Request $request)
     {
         $this->validate($request,[
             'name'=>'required',
+            'phone_number'=>'required',
             'email'=>'required|email|unique:users',
             'password'=>'required|confirmed|min:6',
+            'user_type'=>'required',
         ]);
 
-        $user = new User();
-        // $user->type = 1;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->job_id = $request->user_type;
+        DB::beginTransaction();
 
-        $user->save();
+        try {
+            $user = new User();
+            
+            $directory = 'assets/images/user_images';
+            if($photo = $request->file('photo')){
+                $name = $photo->getClientOriginalName();
+                $filename = pathinfo($name, PATHINFO_FILENAME);
+                $extension = pathinfo($name, PATHINFO_EXTENSION);
+                $new_name = $filename.'-'.time().'.'.$extension;
+                $photo->move($directory,$new_name);
+                $user->photo= $directory.'/'.$new_name;
+            }
 
-        $job = Jobs::where('id', $request->user_type)->first();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->job_id = $request->user_type;
+            $user->type = $request->user()->type;
+            $user->subject_id = $request->user()->subject_id;
+            $user->phone_number = $request->phone_number;
+            $user->save();
 
-        for($i=0; $i<count($job->accessDomains); $i++)
-        {
-            $user->accessDomains()->attach(AccessDomain::where('id',$job->accessDomains[$i]->id)->first());
-        }
-        for($i=0; $i<count($job->roles); $i++)
-        {
-            $user->roles()->attach(Role::where('id',$job->roles[$i]->id)->first());
+            $job = Jobs::where('id', $request->user_type)->first();
+
+            for($i=0; $i<count($job->accessDomains); $i++)
+            {
+                $user->accessDomains()->attach(AccessDomain::where('id',$job->accessDomains[$i]->id)->first());
+            }
+            for($i=0; $i<count($job->roles); $i++)
+            {
+                $user->roles()->attach(Role::where('id',$job->roles[$i]->id)->first());
+            }
+                    
+            DB::commit();
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
+
+            session()->flash('warning', 'Something where wrong please contact Database Adminstrator.');
+            return redirect()->back();
         }
 
         $locale = App::getLocale();
@@ -81,63 +110,120 @@ class UserController extends Controller
     public function show()
     {
         $this->__construct('All Users');
+
+        $auth_user = Auth::user();
+
         $users = User::leftjoin('job', 'job.id', 'users.job_id')
+        ->where('users.type', $auth_user->type)
+        ->where('users.subject_id', $auth_user->subject_id)
         ->select('users.*', 'job.name as user_type', 'job.id as job_id')->get();
-        $access_domains = AccessDomain::get();
-        $domains = AccessDomain::groupBy('domain')->select('domain')->get();
-        $roles = Role::get();
-        return view('auth.show',compact('users','access_domains','domains','roles'));
+        
+        $jobs = Jobs::where('type', $auth_user->type)->where('subject_id', $auth_user->subject_id)->get();
+
+        return view('auth.show',compact('users','jobs'));
     }
 
-    public function change_permission(Request $request)
+    public function user_info($id)
     {
         $this->__construct('All Users');
-        $user = User::where('email',$request->email)->first();
-        $user->job_id = $request->user_type;
-        $user->update();
+
+        $auth_user = Auth::user();
+
+        $user = User::leftjoin('job', 'job.id', 'users.job_id')
+        ->where('users.type', $auth_user->type)
+        ->where('users.subject_id', $auth_user->subject_id)
+        ->where('users.id', $id)
+        ->select('users.*', 'job.name as position', 'job.id as job_id')->first();
         
-        $user->roles()->detach();
-        $user->accessDomains()->detach();
+        $jobs = Jobs::where('type', $auth_user->type)->where('subject_id', $auth_user->subject_id)->get();
 
-        $job = Jobs::where('id', $request->user_type)->first();
+        return view('auth.user_info',compact('user','jobs'));
+    }
 
-        for($i=0; $i<count($job->accessDomains); $i++)
-        {
-            $user->accessDomains()->attach(AccessDomain::where('id',$job->accessDomains[$i]->id)->first());
+    public function user_info_update($id, Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $auth_user = Auth::user();
+
+            $user = User::where('users.type', $auth_user->type)
+            ->where('users.subject_id', $auth_user->subject_id)
+            ->where('users.id', $id)->first();
+            
+            $user->name = $request->name;
+            $user->phone_number = $request->phone_number;
+            $user->email = $request->email;
+            $user->information = $request->information;
+            
+            if($photo = $request->file('photo')){
+                $directory = 'assets/images/user_images';
+                $name = $photo->getClientOriginalName();
+                $filename = pathinfo($name, PATHINFO_FILENAME);
+                $extension = pathinfo($name, PATHINFO_EXTENSION);
+                $new_name = $filename.'-'.time().'.'.$extension;
+                $photo->move($directory,$new_name);
+                $user->photo= $directory.'/'.$new_name;
+            }
+            
+            if ($user->job_id != $request->user_type) {
+                $user->job_id = $request->user_type;
+                
+                $user->roles()->detach();
+                $user->accessDomains()->detach();
+
+                $job = Jobs::where('id', $request->user_type)->first();
+
+                for($i=0; $i<count($job->accessDomains); $i++)
+                {
+                    $user->accessDomains()->attach(AccessDomain::where('id',$job->accessDomains[$i]->id)->first());
+                }
+                for($i=0; $i<count($job->roles); $i++)
+                {
+                    $user->roles()->attach(Role::where('id',$job->roles[$i]->id)->first());
+                }
+            }
+            $user->update();
+            
+            DB::commit();
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
+
+            session()->flash('warning', 'Something where wrong please contact Database Adminstrator.');
+            return redirect()->back();
         }
-        for($i=0; $i<count($job->roles); $i++)
-        {
-            $user->roles()->attach(Role::where('id',$job->roles[$i]->id)->first());
-        }
 
-        $locale = App::getLocale();
-        switch ($locale) {
-            case 'en':
-                session()->flash('success', 'Updated Successfuly.');
-                break;
-
-            case 'fa':
-                session()->flash('success', 'موفقانه اپدیت گردید.');
-                break;
-
-            case 'pa':
-                session()->flash('success', 'په بریالی توگه اپدیت شو.');
-                break;
-
-            default:
-                break;
-        }
-        return redirect()->route('user-show');
+        return redirect()->back();
     }
 
     public function reset_password(Request $request)
     {
         $this->__construct('All Users');
-        $user = User::where('email',$request->email)->first();
+        
+        DB::beginTransaction();
 
-        $user->password = Hash::make($request->password);
+            try {
+            $auth_user = Auth::user();
 
-        $user->save();
+            $user = User::where('type', $auth_user->type)
+            ->where('subject_id', $auth_user->subject_id)
+            ->where('id',$request->id)
+            ->first();
+            $user->password = Hash::make($request->password);
+
+            $user->update();
+                        
+            DB::commit();
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
+
+            session()->flash('warning', 'Something where wrong please contact Database Adminstrator.');
+            return redirect()->back();
+        }
 
         $locale = App::getLocale();
         switch ($locale) {
@@ -156,18 +242,35 @@ class UserController extends Controller
             default:
                 break;
         }
-        return redirect()->route('user-show');
+        return redirect()->back();
     }
 
-    public function destroy($email)
+    public function destroy($email, Request $request)
     {
         $this->__construct('All Users');
-        $user = User::where('email',$email)->first();
+        DB::beginTransaction();
 
-        $user->delete();
+        try {
+            $auth_user = Auth::user();
+            
+            $user = User::where('type', $auth_user->type)
+            ->where('subject_id', $auth_user->subject_id)
+            ->where('id', $request->id)
+            ->first();
+            $user->delete();
 
-        $user->roles()->detach();
-        $user->accessDomains()->detach();
+            $user->roles()->detach();
+            $user->accessDomains()->detach();
+
+            DB::commit();
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
+
+            session()->flash('warning', 'Something where wrong please contact Database Adminstrator.');
+            return redirect()->back();
+        }
 
         $locale = App::getLocale();
         switch ($locale) {
@@ -194,28 +297,42 @@ class UserController extends Controller
         $this->__construct('');
         session()->flash('menu', 'Profile');
 
-        return view('auth.profile');
+        $user = \App\Models\User::join('job', 'job.id', 'users.job_id')
+        ->where('users.id', Auth::user()->id)
+        ->select('users.*', 'job.name as position')->first();
+
+        return view('auth.profile', compact('user'));
     }
     
     public function update_profile(Request $request)
     {
         $user = Auth::user();
 
-        $directory = 'assets/images/user_images';
-        if($photo = $request->file('photo')){
-            $name = $photo->getClientOriginalName();
-            $filename = pathinfo($name, PATHINFO_FILENAME);
-            $extension = pathinfo($name, PATHINFO_EXTENSION);
-            $new_name = $filename.'-'.time().'.'.$extension;
-            $photo->move($directory,$new_name);
-            $user->photo= $directory.'/'.$new_name;
+        DB::beginTransaction();
+
+        try {
+            $directory = 'assets/images/user_images';
+            if($photo = $request->file('photo')){
+                $name = $photo->getClientOriginalName();
+                $filename = pathinfo($name, PATHINFO_FILENAME);
+                $extension = pathinfo($name, PATHINFO_EXTENSION);
+                $new_name = $filename.'-'.time().'.'.$extension;
+                $photo->move($directory,$new_name);
+                $user->photo= $directory.'/'.$new_name;
+            }
+
+            $user->information = $request->information;
+            $user->update();
+                        
+            DB::commit();
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
+
+            session()->flash('warning', 'Something where wrong please contact Database Adminstrator.');
+            return redirect()->back();
         }
-
-        $user->position = $request->position;
-        $user->phone_number = $request->phone_number;
-        $user->information = $request->information;
-        $user->update();
-
         session()->flash('success', 'Updated Successfuly');
 
         return redirect()->back();
@@ -229,9 +346,22 @@ class UserController extends Controller
         ]);
 
         if (Hash::check($request->old_password, Auth::user()->password)){
-            $request->user()->fill([
-                'password' => Hash::make($request->password)
-            ])->save();
+            DB::beginTransaction();
+
+            try {
+                $request->user()->fill([
+                    'password' => Hash::make($request->password)
+                ])->save();
+                            
+                DB::commit();
+                // all good
+            } catch (\Exception $e) {
+                DB::rollback();
+                // something went wrong
+
+                session()->flash('warning', 'Something where wrong please contact Database Adminstrator.');
+                return redirect()->back();
+            }
 
             $locale = App::getLocale();
             switch ($locale) {
@@ -279,11 +409,13 @@ class UserController extends Controller
     public function jobs()
     {
         $this->__construct('User Jobs');
-        $access_domains = AccessDomain::get();
-        $domains = AccessDomain::groupBy('domain')->select('domain')->get();
+        $auth_user = Auth::user();
+
+        $access_domains = AccessDomain::where('type', $auth_user->type)->get();
+        $domains = AccessDomain::where('type', $auth_user->type)->groupBy('domain')->select('domain')->get();
         $roles = Role::get();
         
-        $jobs = Jobs::where('type', 1)->get();
+        $jobs = Jobs::where('type', $auth_user->type)->where('subject_id', $auth_user->subject_id)->get();
 
         return view('auth.jobs.index',compact('access_domains','domains','roles', 'jobs'));
     }
@@ -296,18 +428,34 @@ class UserController extends Controller
             'role'=>'required',
         ]);
 
-        $job = new Jobs();
-        $job->name = $request->name;
-        $job->type = 1;
-        $job->save();
+        DB::beginTransaction();
 
-        for($i=0; $i<count($request->access_domain); $i++)
-        {
-            $job->accessDomains()->attach(AccessDomain::where('id',$request->access_domain[$i])->first());
-        }
-        for($i=0; $i<count($request->role); $i++)
-        {
-            $job->roles()->attach(Role::where('id',$request->role[$i])->first());
+        try {
+            $auth_user = Auth::user();
+
+            $job = new Jobs();
+            $job->name = $request->name;
+            $job->type = $auth_user->type;
+            $job->subject_id = $auth_user->subject_id;
+            $job->save();
+
+            for($i=0; $i<count($request->access_domain); $i++)
+            {
+                $job->accessDomains()->attach(AccessDomain::where('id',$request->access_domain[$i])->first());
+            }
+            for($i=0; $i<count($request->role); $i++)
+            {
+                $job->roles()->attach(Role::where('id',$request->role[$i])->first());
+            }
+
+            DB::commit();
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
+
+            session()->flash('warning', 'Something where wrong please contact Database Adminstrator.');
+            return redirect()->back();
         }
 
         $locale = App::getLocale();
@@ -332,41 +480,56 @@ class UserController extends Controller
     
     public function update_jobs(Request $request)
     {
-        $job = Jobs::where('id', $request->id)->first();
-        $job->name = $request->name;
-        $job->update();
+        DB::beginTransaction();
 
-        $job->roles()->detach();
-        $job->accessDomains()->detach();
+        try {
+            $auth_user = Auth::user();
 
-        for($i=0; $i<count($request->access_domain); $i++)
-        {
-            $job->accessDomains()->attach(AccessDomain::where('id',$request->access_domain[$i])->first());
-        }
+            $job = Jobs::where('type', $auth_user->type)->where('subject_id', $auth_user->subject_id)->where('id', $request->id)->first();
+            $job->name = $request->name;
+            $job->update();
 
-        for($i=0; $i<count($request->role); $i++)
-        {
-            $job->roles()->attach(Role::where('id',$request->role[$i])->first());
-        }
+            $job->roles()->detach();
+            $job->accessDomains()->detach();
+
+            for($i=0; $i<count($request->access_domain); $i++)
+            {
+                $job->accessDomains()->attach(AccessDomain::where('id',$request->access_domain[$i])->first());
+            }
+
+            for($i=0; $i<count($request->role); $i++)
+            {
+                $job->roles()->attach(Role::where('id',$request->role[$i])->first());
+            }
+            
+            $users = User::where('type', $auth_user->type)->where('subject_id', $auth_user->subject_id)->where('job_id', $request->id)->get();
+
+            foreach ($users as $item)
+            {
+                $user = User::where('id', $item->id)->first();
+                $user->roles()->detach();
+                $user->accessDomains()->detach();
         
-        $users = User::where('job_id', $request->id)->get();
+                $job = Jobs::where('id', $request->id)->first();
+        
+                for($i=0; $i<count($job->accessDomains); $i++)
+                {
+                    $user->accessDomains()->attach(AccessDomain::where('id',$job->accessDomains[$i]->id)->first());
+                }
+                for($i=0; $i<count($job->roles); $i++)
+                {
+                    $user->roles()->attach(Role::where('id',$job->roles[$i]->id)->first());
+                }
+            }
 
-        foreach ($users as $item)
-        {
-            $user = User::where('id', $item->id)->first();
-            $user->roles()->detach();
-            $user->accessDomains()->detach();
-    
-            $job = Jobs::where('id', $request->id)->first();
-    
-            for($i=0; $i<count($job->accessDomains); $i++)
-            {
-                $user->accessDomains()->attach(AccessDomain::where('id',$job->accessDomains[$i]->id)->first());
-            }
-            for($i=0; $i<count($job->roles); $i++)
-            {
-                $user->roles()->attach(Role::where('id',$job->roles[$i]->id)->first());
-            }
+            DB::commit();
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
+
+            session()->flash('warning', 'Something where wrong please contact Database Adminstrator.');
+            return redirect()->back();
         }
 
         $locale = App::getLocale();
@@ -395,13 +558,28 @@ class UserController extends Controller
             'id'=>'required',
         ]);
 
-        $job = Jobs::where('id',$request->id)->first();
+        DB::beginTransaction();
 
-        $job->delete();
+        try {
+            $auth_user = Auth::user();
 
-        $job->roles()->detach();
-        $job->accessDomains()->detach();
+            $job = Jobs::where('type', $auth_user->type)->where('subject_id', $auth_user->subject_id)->where('id',$request->id)->first();
 
+            $job->delete();
+
+            $job->roles()->detach();
+            $job->accessDomains()->detach();
+
+            DB::commit();
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
+
+            session()->flash('warning', 'Something where wrong please contact Database Adminstrator.');
+            return redirect()->back();
+        }
+        
         $locale = App::getLocale();
         switch ($locale) {
             case 'en':

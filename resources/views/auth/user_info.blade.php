@@ -30,7 +30,7 @@
       <div class="card-header p-2">
         <h4 class="d-inline">Info</h4>
         <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#update_modal">Update Profile</button>
-        <button type="button" class="btn btn-sm btn-primary float-right mr-2" data-toggle="modal" data-target="#password_modal">Change Password</button>
+        <button type="button" class="btn btn-sm btn-primary float-right mr-2" data-toggle="modal" data-target="#password_modal">Reset Password</button>
       </div><!-- /.card-header -->
       <div class="card-body">
         <h4 class="card-title"><b>Infromation</b></h4>
@@ -50,10 +50,31 @@
           </button>
         </div>
         <div class="modal-body">
-            <form action="{{route('update.profile')}}" method="post" enctype="multipart/form-data">
+            <form action="{{route('user-info-update', $user->id)}}" method="post" enctype="multipart/form-data">
                 @csrf
 
                 <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                    <label for="">Name</label>
+                    <input type="text" class="form-control" oninvalid="InvalidMsg(this);" name="name" value="{{$user->name}}" required>
+                  </div>
+                  <div class="col-xs-12 col-md-6">
+                    <label for="">Phone Number</label>
+                    <input type="text" class="form-control" oninvalid="InvalidMsg(this);" name="phone_number" value="{{$user->phone_number}}" required>
+                  </div>
+                  <div class="col-xs-12 col-md-6">
+                    <label for="">Email Address</label>
+                    <input type="text" class="form-control" oninvalid="InvalidMsg(this);" name="email" value="{{$user->email}}" required>
+                  </div>
+                  <div class="col-xs-12 col-md-6">
+                    <label for="">User Type</label>
+                    <select class="form-control" name="user_type" required>
+                      <option value="">--Select User Type--</option>
+                      @foreach ($jobs as $item)
+                        <option value="{{$item->id}}" {{$user->job_id == $item->id ? 'selected' : ''}}>{{$item->name}}</option>
+                      @endforeach
+                    </select>
+                  </div>
                   <div class="col-xs-12 col-md-12">
                     <label for="">Select Your Photo</label>
                     <input type="file" accept="image/*" class="form-control-file" name="photo">
@@ -78,27 +99,20 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header bg-primary">
-          <h4 class="modal-title">Change Password</h4>
+          <h4 class="modal-title">Reset Password</h4>
           <button type="button" class="close" data-dismiss="modal">
             <span aria-hidden="true">×</span>
           </button>
         </div>
         <div class="modal-body">
-            <form action="{{route('change-user-password')}}" method="post">
+            <form action="{{route('change-password')}}" method="post">
                 @csrf
+                <input type="hidden" value="{{$user->id}}" name="id">
 
                 <div class="row">
                   <div class="col-xs-12 col-md-12">
-                    <label for="">Old Password</label>
-                    <input type="password" class="form-control" oninvalid="InvalidMsg(this);" name="old_password" required>
-                  </div>
-                  <div class="col-xs-12 col-md-6">
                     <label for="">Password</label>
                     <input type="password" class="form-control" oninvalid="InvalidMsg(this);" name="password" required>
-                  </div>
-                  <div class="col-xs-12 col-md-6">
-                    <label for="">Confirm Password</label>
-                    <input type="password" class="form-control" oninvalid="InvalidMsg(this);" name="password_confirmation" required>
                   </div>
                 </div>
 
